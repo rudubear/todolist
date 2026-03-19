@@ -1,4 +1,4 @@
-import { todoItem } from "./todoItem.js";
+import { createToDoItem, todoItem } from "./todoItem.js";
 import { PRIORITIES} from "./todoItem.js";
 import { logMessage } from "./logger.js";
 
@@ -13,7 +13,12 @@ export class project {
         return this._projectName;
     }
 
+    get projectID (){
+        return this._projectID;
+    }
+
     addToDoItem(todoitem){
+        todoitem.updateProjectID(this._projectID);
         this._todoList.push(todoitem);
         logMessage(`Task ${todoitem.getTitle()} added to project`)
     }
@@ -25,6 +30,11 @@ export class project {
         logMessage (`time to remove ${itemToRemove} item, ${this._todoList[itemToRemove].getTitle()}`);
 
         this._todoList.splice(itemToRemove, 1);
+    }
+
+    clearAllItems(){
+        this._todoList.length = 0;
+        logMessage(`All items cleared ${this._todoList}`);
     }
 
     listToDoItems(){
@@ -57,7 +67,19 @@ export class project {
         logMessage("Retrieving from local storage");
         for (let i = 0; i < localStorage.length; i++) {
             const key = localStorage.key(i);
-            logMessage(JSON.parse(localStorage.getItem(key)));
+            let parsedToDoItem = JSON.parse(localStorage.getItem(key));
+            if (parsedToDoItem.projectID == this._projectID){
+                let todoItem = createToDoItem(
+                    parsedToDoItem.title,
+                    parsedToDoItem.description,
+                    parsedToDoItem.duedate, 
+                    parsedToDoItem.priority,
+                    parsedToDoItem.isComplete,
+                    parsedToDoItem.todoID,
+                    parsedToDoItem.projectID 
+                );
+            this.addToDoItem(todoItem);
+            }
         }
     }
 }

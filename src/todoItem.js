@@ -21,7 +21,8 @@ function createToDoItem(
     duedate, 
     priority = PRIORITIES.LOW, 
     isComplete = false, 
-    todoID = crypto.randomUUID()
+    todoID = crypto.randomUUID(),
+    projectID = 'empty'
 ){
     let todoItem = {
         title : title,
@@ -29,12 +30,16 @@ function createToDoItem(
         duedate: duedate,
         priority: priority,
         isComplete: isComplete,
-        todoID: todoID 
+        todoID: todoID,
+        projectID: projectID 
     } 
 
     //logMessage(`new to do item ${title} created!`);
 
     const updatePriority = (newPriority) => { priority = newPriority };
+    const updateProjectID = (newProjectID) => { 
+        todoItem.projectID = newProjectID 
+    } 
     const markAsComplete = () => { isComplete = true };
     const markAsIncomplete = () => { isComplete = false };
     const printTodoItem = () => { logMessage({title, description, duedate, priority, isComplete, todoID }) };
@@ -55,12 +60,13 @@ function createToDoItem(
     };
 
     const getMaximumView = () => {
-        return { title, description, duedate, priority, isComplete, todoID };
+        return { title, description, duedate, priority, isComplete, todoID, projectID };
     }
 
     return { 
         todoItem, 
-        updatePriority, 
+        updatePriority,
+        updateProjectID, 
         markAsComplete, 
         markAsIncomplete, 
         printTodoItem, 

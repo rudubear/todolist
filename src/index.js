@@ -44,12 +44,15 @@ btn_about.addEventListener("click", (event) => {
 
 const myProject = new project("my project");
 
-let todoItem1 = createToDoItem("task 1 is very long i think, maybe a bit too long", "task 1 description", "someduedate", PRIORITIES.HIGH, false);
-let todoItem2 = createToDoItem("task 2 is short", "task 2 description", "someduedate", PRIORITIES.MEDIUM)
-let todoItem3 = createToDoItem("task 3 is also very long, a bit too long", "task 3 description", "someduedate", PRIORITIES.MEDIUM, false);
-let todoItem4 = createToDoItem("task 4", "task 4 description", "someduedate", PRIORITIES.LOW, false);
+let todoItem1 = createToDoItem("task 1 is very long i think, maybe a bit too long", "task 1 description", "someduedate", PRIORITIES.HIGH, false, undefined, myProject.projectID);
+let todoItem2 = createToDoItem("task 2 is short", "task 2 description", "someduedate", PRIORITIES.MEDIUM, false, undefined, myProject.projectID)
+let todoItem3 = createToDoItem("task 3 is also very long, a bit too long", "task 3 description", "someduedate", PRIORITIES.MEDIUM, false, undefined, myProject.projectID);
+let todoItem4 = createToDoItem("task 4", "task 4 description", "someduedate", PRIORITIES.LOW, false, undefined, myProject.projectID);
 
+console.log(todoItem1);
 myProject.addToDoItem(todoItem1);
+
+
 myProject.addToDoItem(todoItem2);
 myProject.addToDoItem(todoItem3);
 myProject.addToDoItem(todoItem4);
@@ -68,4 +71,8 @@ myProject.listToDoItemsFull();
 localStorage.clear();
 
 myProject.flushToStorage();
+
+myProject.clearAllItems();
 myProject.retrieveFromStorage();
+
+myProject.listToDoItemsFull();
