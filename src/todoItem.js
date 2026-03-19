@@ -15,69 +15,63 @@ const PRIORITIES = {
     },
 }
 
-class todoItem {
-    //do something
-    _title;
-    _description;
-    _duedate;
-    _priority;
-    _todoComplete;
-    _todoID;
+function createToDoItem(
+    title, 
+    description, 
+    duedate, 
+    priority = PRIORITIES.LOW, 
+    isComplete = false, 
+    todoID = crypto.randomUUID()
+){
+    let todoItem = {
+        title : title,
+        description: description,
+        duedate: duedate,
+        priority: priority,
+        isComplete: isComplete,
+        todoID: todoID 
+    } 
 
+    //logMessage(`new to do item ${title} created!`);
 
-
-    constructor(title, description, due_date, priority, todo_status){
-        this._title = title;
-        this._description = description;
-        this._duedate = due_date;
-        this._priority = priority;
-        this._todoComplete = todo_status;
-        this._todoID = crypto.randomUUID();
-
-        logMessage(`new to do item ${title} created!`);
-    }
-
-    get title() {
-        return this._title;
-    }
-
-    get description() {
-        return this._description;
-    }
-
-    get duedate() {
-        return this._duedate;
-    }
-
-    set duedate(value) {
-        this._duedate = value;
-        logMessage(`ToDo item ${this._title} due date updated to ${value} `);
-    }
+    const updatePriority = (newPriority) => { priority = newPriority };
+    const markAsComplete = () => { isComplete = true };
+    const markAsIncomplete = () => { isComplete = false };
+    const printTodoItem = () => { logMessage({title, description, duedate, priority, isComplete, todoID }) };
     
-    get priority() {
-        return this._priority;
+    const getID = () => todoID;
+    const getTitle = () => title;
+    const getTrimmedTitle = () => {
+        if (title.length <= 20) {
+            return title;
+        }
+        else {
+            return title.substring(0,20);
+        }
+    }
+    const getMinimalView = () => { 
+        let trimmedTitle = getTrimmedTitle(); 
+        return { trimmedTitle, priority, isComplete };
+    };
+
+    const getMaximumView = () => {
+        return { title, description, duedate, priority, isComplete, todoID };
     }
 
-    set priority(value) {
-        this._priority = value;
-        logMessage(`ToDo item ${this._title} updated to ${this._priority}`)
-    }
-
-    get todoID() {
-        return this._todoID;
-    }
-
-
-    markAsComplete(){
-        this._todoComplete = true;
-        logMessage(`marking task ${this._title} as ${this._todoComplete}`);
-    }
-
-    markAsIncomplete(){
-        this._todoComplete = false;
-        logMessage(`marking task ${this._title} as ${this._todoComplete}`);
+    return { 
+        todoItem, 
+        updatePriority, 
+        markAsComplete, 
+        markAsIncomplete, 
+        printTodoItem, 
+        getMinimalView,
+        getMaximumView, 
+        getID, 
+        getTitle, 
+        printTodoItem,
+        getTrimmedTitle 
     }
 }
 
 
-export { PRIORITIES, todoItem };
+export { PRIORITIES, createToDoItem };

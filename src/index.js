@@ -9,7 +9,7 @@ import { page_load_text_home } from "./home.js";
 import { page_load_text_menu } from "./menu.js";
 import { page_load_text_about } from "./about.js";
 import { page_HTMLRenderer } from "./renderHTML.js";
-import { PRIORITIES, todoItem } from "./todoItem.js";
+import { createToDoItem, PRIORITIES} from "./todoItem.js";
 
 console.log(page_load_text_about);
 console.log(page_load_text_home);
@@ -46,10 +46,10 @@ btn_about.addEventListener("click", (event) => {
 
 const myProject = new project("my project");
 
-let todoItem1 = new todoItem("task 1", "task 1 description", "someduedate", PRIORITIES.HIGH, false);
-let todoItem2 = new todoItem("task 2", "task 2 description", "someduedate", PRIORITIES.MEDIUM, false);
-let todoItem3 = new todoItem("task 3", "task 3 description", "someduedate", PRIORITIES.MEDIUM, false);
-let todoItem4 = new todoItem("task 4", "task 4 description", "someduedate", PRIORITIES.LOW, false);
+let todoItem1 = createToDoItem("task 1 is very long i think, maybe a bit too long", "task 1 description", "someduedate", PRIORITIES.HIGH, false);
+let todoItem2 = createToDoItem("task 2 is short", "task 2 description", "someduedate", PRIORITIES.MEDIUM)
+let todoItem3 = createToDoItem("task 3 is also very long, a bit too long", "task 3 description", "someduedate", PRIORITIES.MEDIUM, false);
+let todoItem4 = createToDoItem("task 4", "task 4 description", "someduedate", PRIORITIES.LOW, false);
 
 myProject.addToDoItem(todoItem1);
 myProject.addToDoItem(todoItem2);
@@ -58,7 +58,16 @@ myProject.addToDoItem(todoItem4);
 
 myProject.listToDoItems();
 
-myProject.removeToDoItem(todoItem1.todoID);
-myProject.removeToDoItem(todoItem3.todoID);
+myProject.removeToDoItem(todoItem1.getID());
+myProject.removeToDoItem(todoItem3.getID());
 
 myProject.listToDoItems();
+
+myProject.listToDoItemsBrief();
+
+myProject.listToDoItemsFull();
+
+localStorage.clear();
+
+myProject.flushToStorage();
+myProject.retrieveFromStorage();
