@@ -6,14 +6,12 @@ import { project } from "./projects.js";
 import img_restaurant_bg from "../assets/images/todolist_background.jpg";
 
 import { page_load_text_home } from "./home.js";
-import { page_load_text_menu } from "./menu.js";
 import { page_load_text_about } from "./about.js";
 import { page_HTMLRenderer } from "./renderHTML.js";
 import { createToDoItem, PRIORITIES} from "./todoItem.js";
 
 console.log(page_load_text_about);
 console.log(page_load_text_home);
-console.log(page_load_text_menu);
 console.log(page_HTMLRenderer);
 
 let divContent = document.getElementById("content");
