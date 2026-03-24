@@ -1,7 +1,8 @@
 // index.js
 import "./styles.css";
 
-import { project } from "./projects.js";
+import { Project } from "./projects.js";
+import { ProjectContainer } from "./projectContainer.js";
 
 import img_restaurant_bg from "../assets/images/todolist_background.jpg";
 
@@ -42,37 +43,45 @@ btn_about.addEventListener("click", (event) => {
     divContent.replaceChildren();
 });
 
-const myProject = new project("my project");
+
+
+const myProject = new Project("my project");
+
+const myProjectContainer = new ProjectContainer(myProject);
+
+myProjectContainer.addProject(myProject);
 
 let todoItem1 = createToDoItem("task 1 is very long i think, maybe a bit too long", "task 1 description", "someduedate", PRIORITIES.HIGH, false, undefined, myProject.projectID);
 let todoItem2 = createToDoItem("task 2 is short", "task 2 description", "someduedate", PRIORITIES.MEDIUM, false, undefined, myProject.projectID)
 let todoItem3 = createToDoItem("task 3 is also very long, a bit too long", "task 3 description", "someduedate", PRIORITIES.MEDIUM, false, undefined, myProject.projectID);
 let todoItem4 = createToDoItem("task 4", "task 4 description", "someduedate", PRIORITIES.LOW, false, undefined, myProject.projectID);
 
-console.log(todoItem1);
-myProject.addToDoItem(todoItem1);
+myProjectContainer.addItemToProject(myProject.projectID, todoItem1);
+myProjectContainer.addItemToProject(myProject.projectID, todoItem2);
+myProjectContainer.addItemToProject(myProject.projectID, todoItem3);
+myProjectContainer.addItemToProject(myProject.projectID, todoItem4);
+
+myProjectContainer.listProjectToDoItems(myProject.projectID);
+
+myProjectContainer.removeItemFromProject(myProject.projectID, todoItem1.getID());
+myProjectContainer.removeItemFromProject(myProject.projectID, todoItem3.getID());
 
 
-myProject.addToDoItem(todoItem2);
-myProject.addToDoItem(todoItem3);
-myProject.addToDoItem(todoItem4);
+myProjectContainer.listProjectToDoItems(myProject.projectID);
 
-myProject.listToDoItems();
+myProjectContainer.listProjectToDoItemsBrief(myProject.projectID);
 
-myProject.removeToDoItem(todoItem1.getID());
-myProject.removeToDoItem(todoItem3.getID());
-
-myProject.listToDoItems();
-
-myProject.listToDoItemsBrief();
-
-myProject.listToDoItemsFull();
+myProjectContainer.listProjectTodoItemsFull(myProject.projectID);
 
 localStorage.clear();
 
-myProject.flushToStorage();
+myProjectContainer.flushProjectsToStorage();
 
-myProject.clearAllItems();
-myProject.retrieveFromStorage();
 
-myProject.listToDoItemsFull();
+myProjectContainer.clearAllProjects();
+
+myProjectContainer.listProjectToDoItemsBrief(myProject.projectID);
+
+myProjectContainer.rebuildFromStorage(); //continue here
+
+myProjectContainer.listProjectTodoItemsFull(myProjectContainer.getLatestProject().projectID);

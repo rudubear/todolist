@@ -1,19 +1,5 @@
 import { logMessage } from "./logger.js";
-
-const PRIORITIES = {
-    HIGH : {
-        PRIORITY: "P1",
-        COLOR: "#ff0000"
-    },
-    MEDIUM: {
-        PRIORITY: "P2",
-        COLOR: "#ff9100"
-    },
-    LOW: {
-        PRIORITY: "P3",
-        COLOR: "#fff700"
-    },
-}
+import { PRIORITIES, TODOPREFIX, PROJECTDEFAULT } from "./constants.js";
 
 function createToDoItem(
     title, 
@@ -21,8 +7,8 @@ function createToDoItem(
     duedate, 
     priority = PRIORITIES.LOW, 
     isComplete = false, 
-    todoID = crypto.randomUUID(),
-    projectID = 'empty'
+    todoID = TODOPREFIX + crypto.randomUUID(),
+    projectID = PROJECTDEFAULT
 ){
     let todoItem = {
         title : title,
