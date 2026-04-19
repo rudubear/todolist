@@ -10,6 +10,7 @@ import { page_load_text_home } from "./home.js";
 import { page_load_text_about } from "./about.js";
 import { page_HTMLRenderer } from "./renderHTML.js";
 import { createToDoItem, PRIORITIES} from "./todoItem.js";
+import { todoApp } from "./appContainer.js";
 
 console.log(page_load_text_about);
 console.log(page_load_text_home);
@@ -27,7 +28,7 @@ const btn_home = document.getElementById("btn_Home");
 const btn_menu = document.getElementById("btn_Menu");
 const btn_about = document.getElementById("btn_About");
 
-btn_home.addEventListener("click", (event) => {
+/*btn_home.addEventListener("click", (event) => {
     console.log("home button clicked");
     divContent.replaceChildren();
 
@@ -41,10 +42,11 @@ btn_menu.addEventListener("click", (event) => {
 btn_about.addEventListener("click", (event) => {
     console.log("about button clicked");
     divContent.replaceChildren();
-});
+});*/
 
+todoApp.run();
 
-
+/*
 const myProject = new Project("my project");
 
 const myProjectContainer = new ProjectContainer(myProject);
@@ -60,6 +62,12 @@ myProjectContainer.addItemToProject(myProject.projectID, todoItem1);
 myProjectContainer.addItemToProject(myProject.projectID, todoItem2);
 myProjectContainer.addItemToProject(myProject.projectID, todoItem3);
 myProjectContainer.addItemToProject(myProject.projectID, todoItem4);
+
+todoItem3.markAsComplete();
+todoItem1.markAsComplete();
+
+todoItem2.updatePriority(PRIORITIES.LOW);
+todoItem4.updatePriority(PRIORITIES.HIGH);
 
 myProjectContainer.listProjectToDoItems(myProject.projectID);
 
@@ -85,3 +93,4 @@ myProjectContainer.listProjectToDoItemsBrief(myProject.projectID);
 myProjectContainer.rebuildFromStorage(); //continue here
 
 myProjectContainer.listProjectTodoItemsFull(myProjectContainer.getLatestProject().projectID);
+*/

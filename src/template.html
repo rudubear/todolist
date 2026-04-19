@@ -9,10 +9,7 @@
     <div class="appContainer">
         <div class="appContainerMain">
         <header>
-            <nav>
-                <button id="btn_Home">Btn1</button>
-                <button id="btn_Menu">Btn2</button>
-                <button id="btn_About">Btn3</button>
+            <nav id = "btns_menu">
             </nav>
         </header>
         <div id = "content">
@@ -24,5 +21,61 @@
             <p>A Rudubear website &copy 2026</p>
         </footer>
     </div>
+    <dialog id="modalCreateProject">
+        <input type="text" id="projectNameToBeCreated" value = "myNewProject">
+        <button id="btnCreateProjectConfirm">Create</button>
+        <button id="btnCreateProjectCancel">Cancel</button>
+    </dialog>
+    <dialog id="modalCreateTask">
+        <ul>
+            <li>
+                <input type="text" id="taskNameToBeCreated" value = "myNewTaskName">
+            </li>
+            <li>
+                <input type="text" id="taskNameToBeCreatedDescription" value = "myNewTaskDescription" size = "75">
+            </li>
+            <li>
+                <input type="date" id="taskDuedateToBeCreated"/>
+            </li>
+            <li>
+                <select id="taskPriorityToBeCreated">
+                    <option value = "HIGH">High</option>
+                    <option value = "MEDIUM">Medium</option>
+                    <option value = "LOW">Low</option>
+                </select>      
+            </li>
+            <li>
+                <button id="btnCreateTaskConfirm">Create</button>
+                <button id="btnCreateTaskCancel">Cancel</button>
+            </li>
+        </ul>
+    </dialog>
+    <dialog id="modalUpdateTask">
+        <ul>
+            <li>
+                <input type="text" id="taskNameToBeUpdated">
+            </li>
+            <li>
+                <input type="text" id="taskNameToBeUpdatedDescription" size = "75">
+            </li>
+            <li>
+                <input type="date" id="taskDuedateToBeUpdate"/>
+            </li>
+            <li>
+                <select id="taskPriorityToBeUpdated">
+                    <option value = "HIGH">High</option>
+                    <option value = "MEDIUM">Medium</option>
+                    <option value = "LOW">Low</option>
+                </select>      
+            </li>
+            <li>
+                <input type="checkbox" id="taskCompletecheckbox">Complete</input>
+            </li>
+            <li>
+                <button id="btnUpdateTaskConfirm">Update</button>
+                <button id="btnUpdateTaskCancel">Cancel</button>
+            </li>
+        </ul>
+    </dialog>
 </body>
 </html>

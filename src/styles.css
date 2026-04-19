@@ -66,17 +66,23 @@ footer {
 
 #content {
     background-color: rgba(155,103,60,0.9);
-    width: 600px;
+    min-width: 800px;
+    max-width: 800px;
     padding: 10px;
     color: aliceblue;
-    justify-content: center;
-    align-items: center;
-    flex: 1 1 auto;
+    display: flex;
+    flex: 1;
+    overflow: hidden;
+    min-height: 300px;
     box-sizing: border-box;
 }
 
 ul {
     list-style-type: none;
+}
+
+li {
+    margin-top: 5px;
 }
 
 p {
@@ -151,3 +157,88 @@ button {
     border: 0px solid orange; 
     box-shadow: 0 0 20px rgb(255, 128, 0);
 }
+
+.navButton {
+    width : 125px;
+    height : 110px;
+    background-size : 100%;
+    background-color: orange;
+    vertical-align: top;
+    color: yellow;
+    text-shadow: 1px 1px 1px brown;
+    display: flex;
+    background-repeat: no-repeat;
+    background-position: center;
+}
+
+.myCustomTable {
+    height:fit-content;
+    width: 100%;
+    text-align: center;
+    border-collapse: collapse;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.15);
+}
+
+.myCustomTable thead th {
+    border: 1px solid;
+    border-collapse: collapse;
+}
+
+.myCustomTable td {
+    border: 1px solid;
+}
+
+.myCustomTable tr:nth-of-type(even){
+    background-color: #924200;
+}
+
+.myCustomTable tr:nth-of-type(odd){
+    background-color: #b15000;
+}
+
+.styled-table {
+    border-collapse: collapse;
+    margin: 25px 0;
+    font-size: 0.9em;
+    font-family: sans-serif;
+    width: 100%;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.15);
+    border-radius: 5px 5px 0 0;
+    overflow: hidden;
+    table-layout: fixed;
+  }
+  
+  .styled-table thead tr {
+    background-color: #a0522d; /* Sienna Brown */
+    color: #ffffff;
+    text-align: left;
+  }
+  
+  .styled-table th,
+  .styled-table td {
+    padding: 12px 15px;
+  }
+  
+  .styled-table tbody tr {
+    border-bottom: 1px solid #dddddd;
+  }
+  
+  /* Zebra Striping */
+  .styled-table tbody tr:nth-of-type(even) {
+    background-color: #924200; /* Cornsilk Yellow */
+  }
+  
+  .styled-table tbody tr:nth-of-type(odd) {
+    background-color: #ff9f51;
+  }
+  
+  /* Highlighted last row border */
+  .styled-table tbody tr:last-of-type {
+    border-bottom: 2px solid #a0522d;
+  }
+  
+  /* Hover Effect */
+  .styled-table tbody tr:hover {
+    background-color: #ffb32f; /* Moccasin Orange */
+    cursor: pointer;
+  }

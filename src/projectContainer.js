@@ -8,7 +8,7 @@ import { storage } from "./storage.js";
 class ProjectContainer {
 
     #projectList = [];
-    #virtualDataStore;
+    #virtualDataStore = [];
 
     constructor(myProject = undefined){
         if (myProject) {
@@ -23,6 +23,7 @@ class ProjectContainer {
         if (this.getProjectByID(myProject.projectID)) {
             logMessage("project already exists")
         } else {
+            logMessage(`adding project ${myProject.projectName}, ${myProject.projectID}`);
             this.#projectList.push(myProject);
         }
     }
@@ -41,7 +42,26 @@ class ProjectContainer {
         logMessage(`removing ${todoitemID} from ${this.#projectList[targetProjectIndex].projectID} `);
     }
 
+    listProjects(){
+        this.#projectList.forEach(record => {
+            logMessage(record.projectName);
+        });
+    }
+
+    getAllProjects(){
+        return this.#projectList;
+    }
+
     listProjectToDoItems(myProjectID){
+        let targetProjectIndex = this.getProjectIndexFromID(myProjectID);
+        if (targetProjectIndex >= 0) {
+            this.#projectList[targetProjectIndex].listToDoItems();    
+        } else {
+            logMessage("project not found");
+        }
+    }
+
+    getAllProjectToDoItems(myProjectID){
         let targetProjectIndex = this.getProjectIndexFromID(myProjectID);
         if (targetProjectIndex >= 0) {
             this.#projectList[targetProjectIndex].listToDoItems();    
@@ -70,8 +90,18 @@ class ProjectContainer {
         }
     }
 
+    containsProjects(){
+        return this.#projectList.length > 0;
+    }
+
     getLatestProject(){
-        return this.#projectList[this.#projectList.length-1];
+        if (this.#projectList.length > 0){
+            return this.#projectList[this.#projectList.length-1];
+        }
+        else {
+            logMessage("no projects in project container");
+            return 0;
+        }
     }
 
     getProjectByID(projectID){
@@ -87,6 +117,40 @@ class ProjectContainer {
             return (element.projectID == myProjectID);
         })
         return targetProjectIndex;
+    }
+
+    removeAllCurrentProjects(){
+        logMessage("Removing all projects in current app container");
+        this.#projectList = [];
+    }
+
+    removeTargetProject(targetProjectID){
+        let targetProjectIndex = this.getProjectIndexFromID(targetProjectID);
+        logMessage(this.#projectList);
+        this.removeAllTasksInProjectFromVirtualDataStore(targetProjectID);
+
+        if (targetProjectIndex >= 0) {
+            this.#projectList.splice(targetProjectIndex,1);
+        } else {
+            logMessage("Invalid index recieved on attempting to remove target project");
+        }
+    }
+
+    removeAllTasksInProjectFromVirtualDataStore(targetProjectID){
+        logMessage(this.#virtualDataStore);
+        const entriesToBeRemoved = this.#virtualDataStore.filter(
+            element => (
+                (element.hasOwnProperty('projID') && element.projID === targetProjectID) ||
+                (element.hasOwnProperty('projectID') && element.projectID === targetProjectID)
+            )
+        );
+
+        logMessage(`project to be removed${entriesToBeRemoved}`);
+        
+        const resultantVirtualDataStore = this.#virtualDataStore.filter(element => !(entriesToBeRemoved.includes(element)));
+        this.#virtualDataStore = resultantVirtualDataStore;
+        //while(this.#virtualDataStore.findIndex(element => {element.}))
+        logMessage("revisit this line of code once you have tasks working");
     }
 
     loadDataFromStorage (){
@@ -112,8 +176,25 @@ class ProjectContainer {
 
         this.#virtualDataStore.forEach(record => {
             if ((record.hasOwnProperty('title') && (record.type == 'todo'))){
-                const { title, description, duedate, priority, isComplete, todoID, projectID } = record;
-                let loadingToDoItem = createToDoItem(title, description, duedate, priority, isComplete, todoID, projectID);
+                const { 
+                    title, 
+                    description, 
+                    duedate, 
+                    priority, 
+                    isComplete, 
+                    todoID, 
+                    projectID 
+                } = record;
+
+                let loadingToDoItem = createToDoItem(
+                    title, 
+                    description, 
+                    duedate, 
+                    priority, 
+                    isComplete, 
+                    todoID, 
+                    projectID
+                );
                 let targetProjectIndex = this.#projectList.findIndex((element) => {
                     return ( element.projectID == projectID );
                 })
@@ -128,9 +209,13 @@ class ProjectContainer {
     rebuildFromStorage(){
         logMessage("Rebuilding projects and tasks from storage");
         
+        this.removeAllCurrentProjects();
         this.loadDataFromStorage();
-        this.loadProjectsFromVirtualDataStore();
-        this.loadTasksFromVirtualDataStore();
+        if(this.#virtualDataStore.length > 0) {
+            this.loadProjectsFromVirtualDataStore();
+            this.loadTasksFromVirtualDataStore();
+        }
+        
         
         /*
         const dataFromStorage = storage.readFromStorage();
@@ -150,7 +235,7 @@ class ProjectContainer {
     }
 
     flushProjectsToStorage(){
-        logMessage("Flushing Projects to Storage");
+        logMessage("Flushing all live Projects to Storage");
         this.#projectList.forEach((element) => {
             element.flushToStorage();
         });
@@ -164,6 +249,11 @@ class ProjectContainer {
     clearAllInProject(myProjectID){
         logMessage(`Clearing Project ${myProjectID}`);
         this.#projectList[this.getProjectIndexFromID(myProjectID)].clearAllItems();
+    }
+
+    wipeAllProjectsOnStorage(){
+        logMessage("Deleting all Projects in Storage");
+        storage.deleteAllStorageItems();
     }
 
     

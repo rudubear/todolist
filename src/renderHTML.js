@@ -1,3 +1,5 @@
+import { logMessage } from "./logger.js";
+
 const page_HTMLRenderer = "loading HTML Renderer!"
 
 function renderHTMLMenuObject (menuItem, menuItemImageSource){
@@ -92,8 +94,36 @@ function createHTMLelement_TableRow(array_of_data){
         myTableBodyRowData.innerText = data;
         myTableBodyRow.appendChild(myTableBodyRowData);
     })
-    
     return myTableBodyRow;
+}
+
+function createHTMLelement_Button(text, fn, styleclass = undefined, img = undefined){
+    const myButton = document.createElement("button");
+    myButton.textContent = text;
+    myButton.addEventListener("click",fn)
+    if (styleclass) {
+        myButton.classList += styleclass;
+    }
+    
+    if(img){
+        myButton.style.backgroundImage = `url(${img})`;
+        //myButton.style.backgroundColor = "rgba(255, 166, 0, 0.5)";
+        //myButton.style.backgroundBlendMode = "multiplty";
+    }
+    return myButton;
+}
+
+function createHTMLelement_Image(img, altText, width = undefined, height = undefined){
+    const imgElement = document.createElement("img");
+    imgElement.src = img;
+    imgElement.altText = altText;
+    if(width){
+        imgElement.style.width = width;
+    }
+    if(height){
+        imgElement.style.height = height;
+    }
+    return imgElement;
 }
 
 export { 
@@ -106,4 +136,6 @@ export {
     createHTMLelement_TableHeaders,
     createHTMLelement_TableBody,
     createHTMLelement_TableRow,
+    createHTMLelement_Button,
+    createHTMLelement_Image,
     page_HTMLRenderer };

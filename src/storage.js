@@ -9,18 +9,42 @@ class Storage {
 
     writeToStorage(key, value, msg){
         localStorage.setItem(key, value);
-        logMessage(msg);
+        logMessage(`${msg}, ${key} : ${value}`);
     }
 
     readFromStorage(){
         logMessage("Retrieving from local storage");
         let itemsOnLocalStorage = []
-        for (let i = 0; i < localStorage.length; i++) {
-            const mykey = localStorage.key(i);
-            let parsedToDoItem = JSON.parse(localStorage.getItem(mykey));
-            itemsOnLocalStorage.push(parsedToDoItem);
+        if (localStorage.length > 0) {
+            for (let i = 0; i < localStorage.length; i++) {
+                const mykey = localStorage.key(i);
+                let parsedToDoItem = JSON.parse(localStorage.getItem(mykey));
+                itemsOnLocalStorage.push(parsedToDoItem);
+            }
+        }
+        else {
+            logMessage("There is nothing in storage!");
         }
         return itemsOnLocalStorage;
+    }
+
+    deleteAllStorageItems(){
+        logMessage("Wiping storage");
+        localStorage.clear();
+    }
+
+    deleteInvalidStorageItems(validDataArray, validKeyFindFn){
+        let invalidKeysInStorage = Object.keys(localStorage);
+        logMessage(`All keys in storage ${invalidKeysInStorage}`);
+
+        validDataArray.array.forEach(element => {
+            const index = invalidKeysInStorage.indexOf(element.validKeyFindFn());
+            if (index >=0) {
+                invalidKeysInStorage.splice(index, 1);
+            }  
+        });
+        logMessage(`Invalid keys in storage to be removed ${invalidKeysInStorage}`);
+        
     }
 }
 

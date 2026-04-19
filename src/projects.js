@@ -36,11 +36,17 @@ export class Project {
         }
     }
 
+    updateToDoItem(targetToDoItemID, targetToDoItemFields){
+        const targetToDoItemIndex = this._todoList.findIndex( todoItem => todoItem.getID() === targetToDoItemID );
+        logMessage(`targetting ${this._todoList[targetToDoItemIndex].getID()} for editing`);
+        this._todoList[targetToDoItemIndex].updateToDoItem(...targetToDoItemFields);
+    }
+
     removeToDoItem(todoitemID){
         const itemToRemove = this._todoList.findIndex(todoitem => 
             todoitem.getID() == todoitemID
         );
-        logMessage (`time to remove ${itemToRemove} item, ${this._todoList[itemToRemove].getTitle()}`);
+        logMessage (`removing ${itemToRemove} item, ${this._todoList[itemToRemove].getTitle()}`);
 
         this._todoList.splice(itemToRemove, 1);
     }
@@ -58,6 +64,24 @@ export class Project {
         this._todoList.forEach( todo => {
             todo.printTodoItem();
         } )
+    }
+
+    getTargetToDoItem(targetToDoItemID){
+        let resultTodoItem = this._todoList.find(todoItem => todoItem.getID() === targetToDoItemID);
+        logMessage(`Found ${resultTodoItem.getID()}`);
+        return resultTodoItem;
+    }
+
+    getToDoItems(){
+        if (this._todoList.length == 0) {
+            logMessage("no tasks in this project");
+        }
+
+        return this._todoList;
+    }
+
+    containsToDoItems(){
+        return this._todoList.length > 0;
     }
 
     listToDoItemsBrief(){
@@ -81,7 +105,8 @@ export class Project {
     }
 
     flushToStorage(){
-        logMessage("Writing to local storage");
+        logMessage("Wiping and Writing to local storage");
+        //storage.deleteInvalidStorageItems(this._todoList)
 
         this._todoList.forEach( todo => {
             let key = todo.getID();
@@ -102,23 +127,5 @@ export class Project {
         let value = JSON.stringify( projObject );
         let msg = 'Writing a Project to Storage'
         storage.writeToStorage(key, value, msg);
-    }
-
-    retrieveFromStorage(){
-        logMessage("Retrieving from local storage");
-        const dataFromStorage = storage.readFromStorage();
-
-        dataFromStorage.forEach(record => {
-            if ((record.hasOwnProperty('projName') && (record.type == 'project'))){
-                //TODO
-                console.log('load a project');    
-            }
-
-            if ((record.hasOwnProperty('title') && (record.type == 'todo'))){
-                const { title, description, duedate, priority, isComplete, todoID, projectID } = record;
-                let loadingToDoItem = createToDoItem(title, description, duedate, priority, isComplete, todoID, projectID)
-                this.addToDoItem(loadingToDoItem);
-            }
-        })
     }
 }

@@ -32,6 +32,12 @@ function createToDoItem(
     
     const getID = () => todoID;
     const getTitle = () => title;
+    const getDescription = () => description;
+    const getDueDate = () => duedate;
+    const getPriority = () => priority.PRIORITY;
+    const getPriorityColor = () => priority.COLOR;
+    const getIsComplete = () => isComplete;
+
     const getTrimmedTitle = () => {
         if (title.length <= 20) {
             return title;
@@ -49,6 +55,14 @@ function createToDoItem(
         return { title, description, duedate, priority, isComplete, todoID, projectID };
     }
 
+    const updateToDoItem = (newTitle, newDescription, newDueDate, newPriority, newIsComplete) => {
+        title = newTitle; 
+        description = newDescription; 
+        duedate = newDueDate; 
+        priority = newPriority 
+        isComplete = newIsComplete; 
+    }
+
     return { 
         todoItem, 
         updatePriority,
@@ -61,7 +75,13 @@ function createToDoItem(
         getID, 
         getTitle, 
         printTodoItem,
-        getTrimmedTitle 
+        getTrimmedTitle, 
+        getDescription,
+        getDueDate,
+        getPriority,
+        getPriorityColor,
+        getIsComplete,
+        updateToDoItem
     }
 }
 
