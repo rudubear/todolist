@@ -21,10 +21,6 @@ export const toDoAppViewGenerator = ( function(){
             myTableRow.setAttribute('data-projectid',`${myProject.projectID}`)
             myTableBody.appendChild(myTableRow);
         });
-
-        /*
-        //This is causing things to break, maybe because it takes time to load before we return mytable to the content div? 
-        //lets solve this later
         
         for(var i = 0; i < myTableBody.rows.length; i++ ){
             let row = myTableBody.rows[i];
@@ -52,13 +48,13 @@ export const toDoAppViewGenerator = ( function(){
                     "auto"
                 )
             );
-        }*/
+        }
 
         myTable.appendChild(myTableBody);
         
         myTable.onclick = (event) => {
-            if (event.target.tagName === "TD") {
-                let targetCommand = (event.target.innerText);
+            if (event.target.tagName === "IMG") {
+                let targetCommand = (event.target.alt);
                 let targetProjectID = event.target.closest("tr").attributes['data-projectid'].value;
                 logMessage(`Event triggered to ${targetCommand} ${targetProjectID}`);
 
@@ -103,22 +99,39 @@ export const toDoAppViewGenerator = ( function(){
             myTableBody.appendChild(myTableRow);
         });
 
-        //lets add images in place of open and delete in the cells. 
-        //Note this is causing issues at page load that are difficult to debug at this time so we have paused this implementaiton
+        for(var i = 0; i < myTableBody.rows.length; i++ ){
+            let row = myTableBody.rows[i];
+            let columnContainingOpenText = 4;
+            let columnContainingDeleteText = 5;
+        
+            
+            
+            row.cells[columnContainingOpenText].replaceChildren(
+                DOMRenderer.createHTMLelement_Image
+                (
+                    IMAGES.img_NewProject,
+                    "Open",
+                    "50px",
+                    "auto"
+                )
+            );
+            
+            row.cells[columnContainingDeleteText].replaceChildren(
+                DOMRenderer.createHTMLelement_Image
+                (
+                    IMAGES.img_DeleteProject,
+                    "Delete",
+                    "50px",
+                    "auto"
+                )
+            );
+        }
 
         myTable.appendChild(myTableBody);
 
-        /*for(var i = 1; i < myTable.rows.length; i++ ){
-            let row = myTable.rows[i];
-            let columnContainingOpenText = 4;
-            let columnContainingDeleteText = 5;
-            row.cells[columnContainingOpenText].innerText = "overwrite";
-            row.cells[columnContainingDeleteText].innerText = "overwrite2";
-        }*/
-
         myTable.onclick = (event) => {
-            if (event.target.tagName === "TD") {
-                let targetCommand = (event.target.innerText);
+            if (event.target.tagName === "IMG") {
+                let targetCommand = (event.target.alt);
                 let targetTaskID = event.target.closest("tr").attributes['data-todoid'].value;
                 logMessage(`Event triggered to ${targetCommand} ${targetTaskID}`);
 
@@ -145,7 +158,7 @@ export const toDoAppViewGenerator = ( function(){
     }
 
     function loadView(containerElement, fnGenerateNewContent, ...args){
-        logMessage(`Reloading view ${containerElement}`);
+        logMessage(`Reloading view ${containerElement.id}`);
         containerElement.replaceChildren();
         const newContent = fnGenerateNewContent(...args);
         containerElement.appendChild(newContent);

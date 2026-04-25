@@ -46,7 +46,7 @@ export class Project {
         const itemToRemove = this._todoList.findIndex(todoitem => 
             todoitem.getID() == todoitemID
         );
-        logMessage (`removing ${itemToRemove} item, ${this._todoList[itemToRemove].getTitle()}`);
+        logMessage (`removing ${this._todoList[itemToRemove].getTitle()} from project`);
 
         this._todoList.splice(itemToRemove, 1);
     }
