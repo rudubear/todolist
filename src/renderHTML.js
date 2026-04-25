@@ -116,7 +116,7 @@ function createHTMLelement_Button(text, fn, styleclass = undefined, img = undefi
 function createHTMLelement_Image(img, altText, width = undefined, height = undefined){
     const imgElement = document.createElement("img");
     imgElement.src = img;
-    imgElement.altText = altText;
+    imgElement.alt = altText;
     if(width){
         imgElement.style.width = width;
     }

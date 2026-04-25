@@ -36,14 +36,24 @@ class Storage {
     deleteInvalidStorageItems(validDataArray, validKeyFindFn){
         let invalidKeysInStorage = Object.keys(localStorage);
         logMessage(`All keys in storage ${invalidKeysInStorage}`);
-
-        validDataArray.array.forEach(element => {
+        //validDataArray[0].todo is included in invalidKeysInStorage
+        
+        validDataArray.forEach(element => {
+            const validKey = validKeyFindFn(element);
+            const index = invalidKeysInStorage.indexOf(validKey);
+            if (index >=0) {
+                invalidKeysInStorage.splice(index, 1);
+            }
+            /*
             const index = invalidKeysInStorage.indexOf(element.validKeyFindFn());
             if (index >=0) {
                 invalidKeysInStorage.splice(index, 1);
-            }  
+            }  */
         });
         logMessage(`Invalid keys in storage to be removed ${invalidKeysInStorage}`);
+        invalidKeysInStorage.forEach(invalidKey => {
+            localStorage.removeItem(invalidKey);
+        })
         
     }
 }

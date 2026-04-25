@@ -12,6 +12,7 @@ import { compareAsc, format } from "date-fns";
 
 export const todoApp = (function() {
     let state = APPSTATE.LOADAPP;
+    let initialLoad = true;
     let myProjectContainer = new ProjectContainer(); 
     let myCurrentProject;
     let myCurrentTask;
@@ -122,21 +123,26 @@ export const todoApp = (function() {
 
         switch(state){
             case APPSTATE.LOADAPP:
-                prepareProjectInterface();
+                //prepareProjectInterface();
                 setState(APPSTATE.OPEN)
                 run();
                 break;
             case APPSTATE.OPEN:
                 //Default state, app is open awaiting input. Load list of al projects.
+                prepareProjectInterface();
+                if (initialLoad) {
+                    logMessage(`Checking storage for projects on initial load`);
+                    myProjectContainer.rebuildFromStorage();
+                    initialLoad = false;
+                }
 
                 if (myProjectContainer.containsProjects()){
                     myCurrentProject = myProjectContainer.getLatestProject();
-                    myCurrentProject.listToDoItemsFull();
                     toDoAppViewGenerator.loadView(
                         myMainContainer, 
                         toDoAppViewGenerator.showProjectListTable, 
                         myProjectContainer.getAllProjects());
-                }
+                } 
                 else {
                     toDoAppViewGenerator.loadView(
                         myMainContainer, 
@@ -154,13 +160,15 @@ export const todoApp = (function() {
                 toDoAppViewGenerator.loadView(
                     myMainContainer, 
                     toDoAppViewGenerator.showProjectListTable, 
-                    myProjectContainer.getAllProjects());
+                    myProjectContainer.getAllProjects()
+                );
                 setState(APPSTATE.OPEN);
                 run();
                 break;
 
             case APPSTATE.SAVEDATA:
-                //Write all current project data to storage, overwriting existing keys/values.
+                //Update storage and write valid projects and tasks to storage
+                myProjectContainer.removeInvalidObjectsFromStorage();
                 myProjectContainer.flushProjectsToStorage();
                 setState(APPSTATE.OPEN);
                 run();
@@ -169,12 +177,12 @@ export const todoApp = (function() {
             case APPSTATE.CREATEPROJECT:
                 //Pop up a modal to create a new project. User can cancel.
                 const myModal = document.getElementById("modalCreateProject");
+                document.getElementById("projectNameToBeCreated").value = "myNewProject";
                 myModal.showModal();
 
                 
                 const myModalCreateButton = document.getElementById("btnCreateProjectConfirm");
                 const myModalCancelButton = document.getElementById("btnCreateProjectCancel");
-                
 
                 myModalCreateButton.onclick = () => { 
                     const myModalNewProjectName = document.getElementById("projectNameToBeCreated").value;
@@ -185,7 +193,6 @@ export const todoApp = (function() {
                 
                 };
                 myModalCancelButton.onclick = () => { 
-                    //myModalNewProjectName.value = "myNewProject";
                     myModal.close();
                     setState(APPSTATE.OPEN);
                     run();
@@ -194,7 +201,7 @@ export const todoApp = (function() {
 
             case APPSTATE.DELETEPROJECTS:
                 //Delete all current projects but don't touch storage
-                myProjectContainer.clearAllProjects();
+                myProjectContainer.removeAllCurrentProjects();
                 myProjectContainer.listProjects();
                 toDoAppViewGenerator.loadView(
                     myMainContainer, 
@@ -224,7 +231,6 @@ export const todoApp = (function() {
                 prepareTaskInterface();
                 setState(APPSTATE.ACTIVEOPENPROJECT);
                 run();
-                //TODO
                 break;
             case APPSTATE.ACTIVEOPENPROJECT:
                 if (myCurrentProject.containsToDoItems()){
@@ -232,25 +238,25 @@ export const todoApp = (function() {
                         myMainContainer, 
                         toDoAppViewGenerator.showTaskListTable, 
                         myCurrentProject.getToDoItems());    
+                } else {
+                    logMessage("how did we get here?");
+                    toDoAppViewGenerator.loadView(
+                        myMainContainer, 
+                        toDoAppViewGenerator.loadNoRelevantItems, 
+                        APPTEXT.txt_noTasks);
                 }
-                //TODO
-                break;
-            case APPSTATE.SAVEPROJECT:
-                //TODO
                 break;
             case APPSTATE.CLOSEPROJECT:
-                logMessage(`Closing Current PRoject ${myCurrentProject.projectID}`)
+                logMessage(`Closing Current Project ${myCurrentProject.projectID}`)
                 myCurrentProject = undefined;
                 setState(APPSTATE.LOADAPP);
                 run();
-                //TODO
                 break;
             case APPSTATE.DELETEPROJECT:
                 logMessage(`Time to Delete Project ${myCurrentProject.projectID}`);
                 myProjectContainer.removeTargetProject(myCurrentProject.projectID);
                 setState(APPSTATE.OPEN);
                 run();
-                //TODO
                 break;
             case APPSTATE.CREATETODO:
                 //Pop up a modal to create a new todo item. User can cancel.
@@ -293,14 +299,10 @@ export const todoApp = (function() {
                 
                 };
                 myModalTaskCancelButton.onclick = () => { 
-                    //myModalNewProjectName.value = "myNewProject";
-                    
                     myModalTask.close();
                     setState(APPSTATE.ACTIVEOPENPROJECT);
                     run();
                 };
-                break;
-
                 break;
             case APPSTATE.OPENTODO:
                 logMessage(`Time to edit a task ${myCurrentProject} ${myCurrentTask}`);
@@ -362,39 +364,21 @@ export const todoApp = (function() {
                 
                 };
                 myModalTaskUpdateCancelButton.onclick = () => { 
-                    //myModalNewProjectName.value = "myNewProject";
-                    
                     myModalEditTask.close();
                     setState(APPSTATE.ACTIVEOPENPROJECT);
                     run();
                 };
-                
-                //TODO
-                break;
-            case APPSTATE.SAVETODO:
-                //TODO
-                break;
-            case APPSTATE.CLOSETODO:
-                //TODO
-                break;
+            break;
+        
             case APPSTATE.DELETETODO:
                 logMessage(`Time to delete ${myCurrentTask.getID()}`);
                 myCurrentProject.removeToDoItem(myCurrentTask.getID());
+                myProjectContainer.removeTaskWithinProjectFromVirtualDataStore(myCurrentTask.getID());
                 setState(APPSTATE.ACTIVEOPENPROJECT);
                 run();
                 break;
-            case APPSTATE:
-                //TODO
-                break;
-            case APPSTATE:
-                //TODO
-                break;
-            case APPSTATE:
-                //TODO
-                break;
-            case APPSTATE:
-                //TODO
-                break;
+            default:
+                logMessage(`How did we end in an invalid state ${state} ?`);
         }
     }
 
@@ -410,23 +394,6 @@ export const todoApp = (function() {
     function setCurrentTask(targetTaskID){
         myCurrentTask = myCurrentProject.getTargetToDoItem(targetTaskID);
         logMessage(`current task set to ${myCurrentTask.getID()}`)
-    }
-
-    function btnLoadData(){
-        myProjectContainer.loadDataFromStorage();
-        //TODO : populate gui, link projects on dom
-    }
-
-    function btnSaveData(){
-        myProjectContainer.flushProjectsToStorage();
-        //Nothing to do on gui?
-    }
-
-    function btnCreateProject(){
-        //TODO: Pop open a modal to take input on project
-        let newProjectTitle = "new project title"
-        let newProject = new Project(newProjectTitle)
-        myProjectContainer.addProject();
     }
 
     return {
